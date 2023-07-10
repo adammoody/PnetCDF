@@ -59,7 +59,8 @@ int main(int argc, char **argv)
         printf("Warning: %s is designed to run on 1 process\n", argv[0]);
 #endif
 
-    err = ncmpi_create(MPI_COMM_WORLD, filename, NC_CLOBBER | NC_64BIT_DATA,
+    //err = ncmpi_create(MPI_COMM_WORLD, filename, NC_CLOBBER | NC_64BIT_DATA,
+    err = ncmpi_create(MPI_COMM_WORLD, filename, NC_CLOBBER | NC_64BIT_DATA | NC_SHARE, // ATM
                        MPI_INFO_NULL, &ncid); CHECK_ERR
 
     /* define a variable of a 6 x 4 integer array in the nc file */
@@ -68,6 +69,8 @@ int main(int argc, char **argv)
     err = ncmpi_def_var(ncid, "var", NC_INT, 2, dimid, &varid); CHECK_ERR
     err = ncmpi_set_fill(ncid, NC_FILL, NULL); CHECK_ERR
     err = ncmpi_enddef(ncid); CHECK_ERR
+
+    //ncmpi_sync(ncid); // ATM
 
     for (j=0; j<6; j++) for (i=0; i<4; i++) buf[j][i] = j*4+i + rank*100;
 

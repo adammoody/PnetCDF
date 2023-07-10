@@ -299,6 +299,7 @@ int main(int argc, char** argv)
 
     /* create a new file for writing ----------------------------------------*/
     cmode = NC_CLOBBER | NC_64BIT_DATA;
+    //cmode |= NC_SHARE; // ATM
     err = ncmpi_create(MPI_COMM_WORLD, filename, cmode, MPI_INFO_NULL, &ncid);
     CHECK_ERR
 
@@ -344,6 +345,8 @@ int main(int argc, char** argv)
     if (!bb_enabled) {
         nerrs += clear_file_contents(ncid, varid);
     }
+
+    ncmpi_sync(ncid); // ATM
 
     nerrs += check_num_pending_reqs(ncid, nreqs, __LINE__);
     err = ncmpi_wait_all(ncid, nreqs, reqs, sts);
@@ -430,6 +433,7 @@ int main(int argc, char** argv)
 
     /* create a new file for writing */
     cmode = NC_CLOBBER | NC_64BIT_DATA;
+    //cmode |= NC_SHARE; // ATM
     err = ncmpi_create(MPI_COMM_WORLD, filename, cmode, MPI_INFO_NULL, &ncid);
     CHECK_ERR
 
@@ -462,6 +466,8 @@ int main(int argc, char** argv)
     if (!bb_enabled) {
         nerrs += clear_file_contents(ncid, varid);
     }
+
+    ncmpi_sync(ncid); // ATM
 
     nerrs += check_num_pending_reqs(ncid, nreqs*2, __LINE__);
     err = ncmpi_wait_all(ncid, nreqs, reqs, sts);
@@ -513,6 +519,7 @@ int main(int argc, char** argv)
 
     /* create a new file for writing */
     cmode = NC_CLOBBER | NC_64BIT_DATA;
+    //cmode |= NC_SHARE; // ATM
     err = ncmpi_create(MPI_COMM_WORLD, filename, cmode, MPI_INFO_NULL, &ncid);
     CHECK_ERR
 
@@ -560,6 +567,8 @@ int main(int argc, char** argv)
     if (!bb_enabled) {
         nerrs += clear_file_contents(ncid, varid);
     }
+
+    ncmpi_sync(ncid); // ATM
 
     nerrs += check_num_pending_reqs(ncid, nreqs*3, __LINE__);
 

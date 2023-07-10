@@ -45,6 +45,7 @@ tst_fmt(char *filename, int cmode)
 
     /* create a new file for writing ------------------------------------*/
     cmode |= NC_CLOBBER;
+    //cmode |= NC_SHARE; // ATM
     err = ncmpi_create(MPI_COMM_WORLD, filename, cmode, MPI_INFO_NULL, &ncid); CHECK_ERR
 
     /* define dimension */
@@ -60,6 +61,8 @@ tst_fmt(char *filename, int cmode)
     err = ncmpi_def_var_fill(ncid, varid[1], 0, NULL); CHECK_ERR
 
     err = ncmpi_enddef(ncid); CHECK_ERR
+
+    ncmpi_sync(ncid); // ATM
 
     /* initialize I/O buffer */
     for (i=0; i<NY*NX; i++) buf[i] = rank+5;

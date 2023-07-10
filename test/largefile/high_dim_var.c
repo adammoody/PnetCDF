@@ -55,6 +55,7 @@ int main(int argc, char** argv) {
 
     cmode = NC_CLOBBER;
     cmode |= NC_64BIT_DATA;
+    //cmode |= NC_SHARE; // ATM
     err = ncmpi_create(MPI_COMM_WORLD, filename, cmode, MPI_INFO_NULL,
                        &ncid); CHECK_ERR
 
@@ -78,6 +79,8 @@ int main(int argc, char** argv) {
     err = ncmpi_enddef(ncid); CHECK_ERR
     if (err != NC_NOERR) goto fn_exit;
 
+    ncmpi_sync(ncid); //ATM
+
     nelms = (NRECS > DIMLEN) ? NRECS : DIMLEN;
     for (i=1; i<NDIMS; i++) nelms *= DIMLEN;
     buffer = (short*) malloc(nelms * sizeof(short));
@@ -95,6 +98,8 @@ int main(int argc, char** argv) {
             err = ncmpi_fill_var_rec(ncid, rvarid[i], j); CHECK_ERR
         }
     }
+
+    ncmpi_sync(ncid); //ATM
 
     for (i=0; i<nelms; i++) buffer[i] = i % 32768;
 

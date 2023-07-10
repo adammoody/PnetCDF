@@ -329,7 +329,7 @@ int main(int argc, char **argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 
-    verbose = 0;
+    verbose = 1;
     if (argc > 2) {
         if (!rank) printf("Usage: %s [file base name]\n",argv[0]);
         MPI_Finalize();
@@ -468,6 +468,7 @@ int main(int argc, char **argv)
             strcpy(filename3, filename);
 
         err = ncmpi_create(MPI_COMM_WORLD, filename, NC_CLOBBER|NC_64BIT_OFFSET,
+        //err = ncmpi_create(MPI_COMM_WORLD, filename, NC_CLOBBER|NC_64BIT_OFFSET|NC_SHARE, // ATM
                            info, &ncid);
         CHECK_ERR
         /* define dimensions */
@@ -512,6 +513,8 @@ int main(int argc, char **argv)
         err = ncmpi_enddef(ncid);
         CHECK_ERR
 
+        ncmpi_sync(ncid); // ATM
+
         if (k == 0) {
             if (rank == 0 && verbose)
                 printf("*** Testing to write 2 non-record variables and 2 record variables by using ncmpi_put_vara_all() ...");
@@ -522,6 +525,7 @@ int main(int argc, char **argv)
                     CHECK_ERR
                 }
             }
+            ncmpi_sync(ncid); // ATM
             for (i=0; i<nvars; i++){
                 err = ncmpi_put_vara_all(ncid, varid[i], starts[i], counts[i], buf[i], bufcounts[i], MPI_INT);
                 CHECK_ERR
@@ -657,6 +661,7 @@ printf("filename2=%s filename3=%s\n",filename2, filename3);
                  printf("\t OK\n");
             }
         }
+        fflush(stdout);
     }
 
 /*

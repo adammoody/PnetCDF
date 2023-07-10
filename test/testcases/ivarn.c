@@ -192,6 +192,7 @@ int main(int argc, char** argv)
 
     /* create a new file for writing ----------------------------------------*/
     cmode = NC_CLOBBER | NC_64BIT_DATA;
+    //cmode |= NC_SHARE; // ATM
     err = ncmpi_create(MPI_COMM_WORLD, filename, cmode, MPI_INFO_NULL, &ncid); CHECK_ERR
 
     err = ncmpi_def_dim(ncid, "dim000001", LEN, &dimid[1]); CHECK_ERR
@@ -215,6 +216,11 @@ int main(int argc, char** argv)
         err = ncmpi_fill_var_rec(ncid, vari0002, 0); CHECK_ERR
         err = ncmpi_fill_var_rec(ncid, varr0002, 0); CHECK_ERR
         err = ncmpi_fill_var_rec(ncid, vard0002, 0); CHECK_ERR
+
+        // ATM: above fill calls write to various parts of the file
+        // these need to be synced because actual writes below
+        // will overwrite regions from other processes
+        ncmpi_sync(ncid);
     }
 
     starts    = (MPI_Offset**) malloc(2 *    sizeof(MPI_Offset*));

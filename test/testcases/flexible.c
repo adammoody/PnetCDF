@@ -77,6 +77,7 @@ int main(int argc, char **argv) {
     }
 
     err = ncmpi_create(MPI_COMM_WORLD, filename, NC_CLOBBER, MPI_INFO_NULL,
+    //err = ncmpi_create(MPI_COMM_WORLD, filename, NC_CLOBBER|NC_SHARE, MPI_INFO_NULL, // ATM
                        &ncid); CHECK_ERR
 
     /* define a 2D array */
@@ -95,6 +96,8 @@ int main(int argc, char **argv) {
     err = ncmpi_fill_var_rec(ncid, varid2, 1); CHECK_ERR
     err = ncmpi_fill_var_rec(ncid, varid3, 0); CHECK_ERR
     err = ncmpi_fill_var_rec(ncid, varid3, 1); CHECK_ERR
+
+    ncmpi_sync(ncid); // ATM
 
     /* initialize the contents of the array */
     for (j=0; j<NY; j++) for (i=0; i<NX; i++) buf[j][i] = j+10;
