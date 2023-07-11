@@ -100,7 +100,7 @@ ncmpio_create(MPI_Comm     comm,
          * If the file is a symbolic link, then we cannot delete the file, as
          * the link will be gone.
          */
-        if (S_ISREG(st_buf.st_mode)) use_trunc = 0;
+        //if (S_ISREG(st_buf.st_mode)) use_trunc = 0; // UNIFYFS
     }
 #elif defined HAVE_ACCESS
     /* if access() is available, use it to check whether file already exists
