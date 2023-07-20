@@ -1760,6 +1760,7 @@
       integer old_format, nformats, nc_fmt
       integer formats(4)
       integer nf90mpi_get_file_version
+      !integer nf90mpi_get_file_version2
 
       err = nf90mpi_inq_default_format(nc_fmt);
       if (err .ne. NF90_NOERR) &
@@ -1854,5 +1855,54 @@
  1    close(f)
       return
       end
+
+
+!!     This function looks in a file for the netCDF magic number.
+!      integer function nf90mpi_get_file_version2(path, version)
+!        use pnetcdf
+!      implicit none
+!#include "tests.inc"
+!
+!      character*(*) path
+!      integer version
+!      character magic*4
+!      integer ver
+!      integer f, i
+!      parameter (f = 10)
+!      integer ( kind = 4 ) fh
+!      integer ( kind = 4 ) ierr
+!
+!!     remove the file system type prefix name if there is any.
+!!     For example, when path = "lustre:/home/foo/testfile.nc", remove
+!!     "lustre:" to make it "/home/foo/testfile.nc" in open() below
+!      i = index(path, ':')
+!      call MPI_File_open(MPI_COMM_WORLD, path(i+1:), &
+!        MPI_MODE_RDONLY, MPI_INFO_NULL, fh, ierr)
+!
+!!     Assume this is not a netcdf file.
+!      nf90mpi_get_file_version2 = NF90_ENOTNC
+!      version = 0
+!
+!!     Read the magic number, the first 4 bytes of the file.
+!      !read(f, rec=1, err = 1) magic
+!
+!!     If the first three characters are not "CDF" we're done.
+!      if (index(magic, 'CDF') .eq. 1) then
+!         ver = ichar(magic(4:4))
+!         if (ver .eq. 1) then
+!            version = NF90_FORMAT_CLASSIC
+!            nf90mpi_get_file_version2 = NF90_NOERR
+!         elseif (ver .eq. 2) then
+!            version = NF90_FORMAT_CDF2
+!            nf90mpi_get_file_version2 = NF90_NOERR
+!         elseif (ver .eq. 5) then
+!            version = NF90_FORMAT_CDF5
+!            nf90mpi_get_file_version2 = NF90_NOERR
+!         endif
+!      endif
+!
+!      call MPI_File_close(fh, ierr)
+!      return
+!      end
 
 

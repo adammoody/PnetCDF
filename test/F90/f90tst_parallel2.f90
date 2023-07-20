@@ -109,6 +109,8 @@ program f90tst_parallel
   ! With classic model netCDF-4 file, enddef must be called.
   call handle_err(nf90mpi_enddef(ncid))
 
+  call handle_err(nf90mpi_sync(ncid)) ! UNIFYFS
+
   ! Determine what part of the variable will be written for this
   ! processor. It's a checkerboard decomposition.
   count = (/ NX / 4, NY / 4 /)

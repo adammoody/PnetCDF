@@ -113,6 +113,8 @@ program f90tst_parallel3
   ! This will be the last collective operation.
   call check(nf90mpi_enddef(ncid))
 
+  call check(nf90mpi_sync(ncid)) ! UNIFYFS
+
   ! Determine what part of the variable will be written/read for this
   ! processor. It's a checkerboard decomposition.
   count = (/ HALF_NX, HALF_NY /)

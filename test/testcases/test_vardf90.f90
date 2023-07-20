@@ -306,6 +306,8 @@
           err = nf90mpi_fill_var_rec(ncid, varid2, recno)
           call check(err, 'In nf90mpi_fill_var_rec: varid2, 2 ')
 
+          err = nf90mpi_sync(ncid) ! UNIFYFS
+
           ! create a file type for the record variable */
           err = nf90mpi_inq_recsize(ncid, recsize)
           call check(err, 'In nf90mpi_inq_recsize: ')

@@ -113,6 +113,8 @@
           err = nf90mpi_enddef(ncid)
           call check(err, 'In nf90mpi_enddef: ')
 
+          err = nf90mpi_sync(ncid) ! UNIFYFS
+
           ! pick arbitrary numbers of requests for 4 processes
           num_reqs = 0
           if (rank .EQ.  0) then
@@ -228,6 +230,8 @@
           err = nf90mpi_put_varn_all(ncid, varid, buffer, num_reqs, &
                                      starts, counts)
           call check(err, 'In nf90mpi_put_varn_all: ')
+
+          err = nf90mpi_sync(ncid) ! UNIFYFS
 
           if (nprocs .GT. 4) call MPI_Barrier(MPI_COMM_WORLD, err)
 

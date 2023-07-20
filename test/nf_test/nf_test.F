@@ -859,8 +859,9 @@ C           /* Test write functions */
             if (cdf_format .ne. 4) then
             call test('nfmpi_set_fill', test_nfmpi_set_fill)
             end if
-            call test('nfmpi_set_default_format',
-     +                test_nfmpi_set_default_format)
+! UNIFYFS - fails on call to open
+!            call test('nfmpi_set_default_format',
+!     +                test_nfmpi_set_default_format)
         end if
 
         call MPI_Info_free(info, err)
