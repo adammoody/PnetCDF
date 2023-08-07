@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 
     cmode = NC_CLOBBER;
     cmode |= NC_64BIT_DATA;
-    //cmode |= NC_SHARE; // ATM
+    //cmode |= NC_SHARE; // UNIFYFS
     err = ncmpi_create(MPI_COMM_WORLD, filename, cmode, MPI_INFO_NULL,
                        &ncid); CHECK_ERR
 
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
     err = ncmpi_enddef(ncid); CHECK_ERR
     if (err != NC_NOERR) goto fn_exit;
 
-    ncmpi_sync(ncid); //ATM
+    ncmpi_sync(ncid); // UNIFYFS
 
     nelms = (NRECS > DIMLEN) ? NRECS : DIMLEN;
     for (i=1; i<NDIMS; i++) nelms *= DIMLEN;
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    ncmpi_sync(ncid); //ATM
+    ncmpi_sync(ncid); //UNIFYFS
 
     for (i=0; i<nelms; i++) buffer[i] = i % 32768;
 
@@ -119,6 +119,8 @@ int main(int argc, char** argv) {
         err = ncmpi_put_vars_short_all(ncid, rvarid[i], start, count, stride,
                                        buffer); CHECK_ERR
     }
+
+    ncmpi_sync(ncid); //UNIFYFS
 
     /* all processes read and verify */
     if (rank > 0) for (i=0; i<NDIMS; i++) count[i]  = 2;
